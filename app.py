@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+import json
 
-from news_crawler import getNaverNewsLink, summarizeNews
+from news_crawler import getNaverNewsLink, summarizeNews, summarizeNewsWithPororoAbs, summarizeNewsWithPororoExt
 
 app = Flask(__name__)
 
@@ -23,9 +24,11 @@ def getNewsList():
 
     news_obj = []
     for i in news_links:
-        print(i)
         news_obj.append(summarizeNews(i))
-    return news_obj
+        # news_obj.append(summarizeNewsWithPororoAbs(i))
+        # news_obj.append(summarizeNewsWithPororoExt(i))
+
+    return jsonify(news_obj)
  
 if __name__ == '__main__':
     app.run(port=7000, debug=True)
