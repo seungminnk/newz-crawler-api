@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 
-from news_crawler import getNaverNewsLink, summarizeNews, summarizeNewsWithPororoAbs, summarizeNewsWithPororoExt
+from news_crawler import getNaverNewsLink, summarizeNews
 
 app = Flask(__name__)
 

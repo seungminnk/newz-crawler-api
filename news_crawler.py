@@ -1,11 +1,11 @@
 from gensim.summarization import summarize
 from newspaper import Article
-from pororo import Pororo
+# from pororo import Pororo
 import requests
 import time
 
-abs_summ = Pororo(task="summarization", model="abstractive", lang="ko")
-ext_summ = Pororo(task="summarization", model="extractive", lang="ko")
+# abs_summ = Pororo(task="summarization", model="abstractive", lang="ko")
+# ext_summ = Pororo(task="summarization", model="extractive", lang="ko")
 
 def getNaverNewsLink(search_word, page, limit):
     url = 'https://openapi.naver.com/v1/search/news.json'
@@ -45,16 +45,21 @@ def summarizeNews(url):
     news.download()
     news.parse()
 
-    original_content = news.text
-    try:
-        summary_content = summarize(original_content, word_count=40)
-    except:
-        original_content = ". ".join(news.text.split("."))
-        summary_content = summarize(original_content, word_count=40)
+    original_content = ". ".join(news.text.split("."))
+    original_content = ". ".join(news.text.split(".  "))
+    summary_content = summarize(original_content, word_count=40)
 
+    # try:
+    #     summary_content = summarize(original_content, word_count=40)
+    # except:
+    #     original_content = ". ".join(news.text.split("."))
+    #     summary_content = summarize(original_content, word_count=40)
+
+    print("------------------------------------------------------------------------------------------------------------------------")
     print("url: ", url)
     print("original content: ", original_content);
     print("------------------------------------------------------------------------------------------------------------------------")
+    print()
 
     json_obj = {}
     json_obj['title'] = news.title
@@ -68,46 +73,46 @@ def summarizeNews(url):
 
     return json_obj
 
-def summarizeNewsWithPororoAbs(url):
-    start = time.time()
+# def summarizeNewsWithPororoAbs(url):
+#     start = time.time()
 
-    news = Article(url, language='ko')
-    news.download()
-    news.parse()
+#     news = Article(url, language='ko')
+#     news.download()
+#     news.parse()
 
-    json_obj = {}
-    json_obj['title'] = news.title
-    json_obj['link'] = url
+#     json_obj = {}
+#     json_obj['title'] = news.title
+#     json_obj['link'] = url
 
-    original_content = ". ".join(news.text.split("."))
+#     original_content = ". ".join(news.text.split("."))
 
-    summary_content = abs_summ(original_content)
-    json_obj['content'] = summary_content
+#     summary_content = abs_summ(original_content)
+#     json_obj['content'] = summary_content
 
-    end = time.time()
+#     end = time.time()
 
-    print(">> ABS_PORORO: ", end-start)
+#     print(">> ABS_PORORO: ", end-start)
 
-    return json_obj
+#     return json_obj
 
-def summarizeNewsWithPororoExt(url):
-    start = time.time()
+# def summarizeNewsWithPororoExt(url):
+#     start = time.time()
 
-    news = Article(url, language='ko')
-    news.download()
-    news.parse()
+#     news = Article(url, language='ko')
+#     news.download()
+#     news.parse()
 
-    json_obj = {}
-    json_obj['title'] = news.title
-    json_obj['link'] = url
+#     json_obj = {}
+#     json_obj['title'] = news.title
+#     json_obj['link'] = url
 
-    original_content = ". ".join(news.text.split("."))
+#     original_content = ". ".join(news.text.split("."))
 
-    summary_content = ext_summ(original_content)
-    json_obj['content'] = summary_content
+#     summary_content = ext_summ(original_content)
+#     json_obj['content'] = summary_content
 
-    end = time.time()
+#     end = time.time()
 
-    print(">> EXT_PORORO: ", end-start)
+#     print(">> EXT_PORORO: ", end-start)
 
-    return json_obj
+#     return json_obj
