@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-import json
+from flask import Flask, request, jsonify, make_response
 
 from news_crawler import getNaverNewsLink, summarizeNews
 
@@ -12,7 +11,7 @@ def getNewsList():
     limit = request.args.get('limit')
 
     if(query is None or query == ''):
-        return 'Query param is required'
+        return make_response('Query param is required!'), 400
     
     if(page is None or page == '' or int(page) < 1):
         page = 1
@@ -25,10 +24,8 @@ def getNewsList():
     news_obj = []
     for i in news_links:
         news_obj.append(summarizeNews(i))
-        # news_obj.append(summarizeNewsWithPororoAbs(i))
-        # news_obj.append(summarizeNewsWithPororoExt(i))
 
     return jsonify(news_obj)
  
 if __name__ == '__main__':
-    app.run(port=7000, debug=True)
+    app.run()
