@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 
-from news_crawler import getNaverNewsLink, summarizeNews
+from news_crawler import getNewsLink, summarizeNews
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ def getNewsList():
     limit = request.args.get('limit')
 
     if(query is None or query == ''):
-        return make_response('Query param is required!'), 400
+        return make_response("'query' parameter is required!"), 400
     
     if(page is None or page == '' or int(page) < 1):
         page = 1
@@ -19,7 +19,7 @@ def getNewsList():
     if(limit is None or limit == '' or int(limit) < 1):
         limit = 3
 
-    news_links = getNaverNewsLink(query, page, limit)
+    news_links = getNewsLink(query, page, limit)
 
     news_obj = []
     for i in news_links:
@@ -28,4 +28,4 @@ def getNewsList():
     return jsonify(news_obj)
  
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

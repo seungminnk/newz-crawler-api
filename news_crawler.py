@@ -3,7 +3,7 @@ from newspaper import Article
 import requests
 
 
-def getNaverNewsLink(search_word, page, limit):
+def getNewsLink(search_word, page, limit):
     url = 'https://openapi.naver.com/v1/search/news.json'
 
     headers = {
@@ -19,52 +19,54 @@ def getNaverNewsLink(search_word, page, limit):
     }
 
     response = requests.get(url, params=params, headers=headers)
-    print("REQUEST URL: ", response.request.url)
     
     result = response.json()
 
     news_list = result['items']
 
-    news_links = []
+    result = []
     for news in news_list:
-        # if(news['originallink'] == ''):
-        #     news_links.append(news['link'])
-        # else:
-        #     news_links.append(news['originallink'])
-        news_links.append(news['link'])
-        
-            
-    return news_links
+        links = {}
 
-def summarizeNews(url):
-    news = Article(url, language='ko')
+        links['link'] = news['link']
+        links['original_link'] = news['originallink']
+
+        result.append(links)
+        
+    return result
+
+
+def summarizeNews(links):
+    link = links['link']
+    original_link = links['original_link']
+
+    url = link
+
+    news = Article(link, language='ko')
     news.download()
     news.parse()
 
-    original_content = ". ".join(news.text.split("."))
-    original_content = ". ".join(news.text.split(".  "))
+    title = news.title
+    original_content = news.text
+
+    remove_keyword = '모두에게 보여주고 싶은 기사라면?beta'
+
+    if remove_keyword in news.text:
+        news = Article(original_link, language='ko')
+        news.download()
+        news.parse()
+
+        original_content = news.text
+
+    original_content = ". ".join(original_content.split("."))
+    original_content = ". ".join(original_content.split(".  "))
+    original_content = " ".join(original_content.split("\n"))
+
     summary_content = summarize(original_content, word_count=40)
 
-    # try:
-    #     summary_content = summarize(original_content, word_count=40)
-    # except:
-    #     original_content = ". ".join(news.text.split("."))
-    #     summary_content = summarize(original_content, word_count=40)
-
-    print("------------------------------------------------------------------------------------------------------------------------")
-    print("url: ", url)
-    print("original content: ", original_content);
-    print("------------------------------------------------------------------------------------------------------------------------")
-    print()
-
     json_obj = {}
-    json_obj['title'] = news.title
+    json_obj['title'] = title
     json_obj['link'] = url
-
-    # if(summary_content == ''):
-    #     original_content = ". ".join(original_content.split("."))
-    #     summary_content = summarize(original_content, word_count=40)
-    
     json_obj['content'] = summary_content
 
     return json_obj
