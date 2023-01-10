@@ -7,8 +7,8 @@ def getNewsLink(search_word, page, limit):
     url = 'https://openapi.naver.com/v1/search/news.json'
 
     headers = {
-        'X-Naver-Client-Id': '',
-        'X-Naver-Client-Secret': ''
+        'X-Naver-Client-Id': 'HR7B8NJpw2PZwi6RVT1J',
+        'X-Naver-Client-Secret': 'rGdx0_dV5W'
     }
 
     params = {
@@ -24,16 +24,21 @@ def getNewsLink(search_word, page, limit):
 
     news_list = result['items']
 
-    result = []
+    result_data = {}
+    result_data['total'] = result['total']
+
+    news_links = []
     for news in news_list:
         links = {}
 
         links['link'] = news['link']
         links['original_link'] = news['originallink']
 
-        result.append(links)
+        news_links.append(links)
         
-    return result
+    result_data['news_links'] = news_links
+
+    return result_data
 
 
 def summarizeNews(links):
@@ -58,9 +63,9 @@ def summarizeNews(links):
 
         original_content = news.text
 
-    original_content = ". ".join(original_content.split("."))
-    original_content = ". ".join(original_content.split(".  "))
     original_content = " ".join(original_content.split("\n"))
+    original_content = ". ".join(original_content.split("."))
+    original_content = " ".join(original_content.split("  "))
 
     summary_content = summarize(original_content, word_count=40)
 

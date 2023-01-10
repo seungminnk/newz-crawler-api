@@ -21,11 +21,15 @@ def getNewsList():
 
     news_links = getNewsLink(query, page, limit)
 
-    news_obj = []
-    for i in news_links:
-        news_obj.append(summarizeNews(i))
+    news_list = []
+    for i in news_links['news_links']:
+        news_list.append(summarizeNews(i))
+
+    news_obj = {}
+    news_obj['total'] = news_links['total']
+    news_obj['news'] = news_list
 
     return jsonify(news_obj)
  
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
