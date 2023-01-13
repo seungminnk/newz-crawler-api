@@ -61,6 +61,8 @@ def summarizeNews(links):
         news.download()
         news.parse()
 
+        url = original_link
+
         original_content = news.text
 
     original_content = " ".join(original_content.split("\n"))
@@ -69,6 +71,26 @@ def summarizeNews(links):
 
     summary_content = summarize(original_content, word_count=40)
 
+    json_obj = {}
+    json_obj['title'] = title
+    json_obj['link'] = url
+    json_obj['content'] = summary_content
+
+    return json_obj
+
+def getNewsDataByNewsUrl(url):
+    news = Article(url, language='ko')
+    news.download()
+    news.parse()
+
+    title = news.title
+    original_content = news.text
+
+    original_content = " ".join(original_content.split("\n"))
+    original_content = ". ".join(original_content.split("."))
+    original_content = " ".join(original_content.split("  "))
+
+    summary_content = summarize(original_content, word_count=40)
     json_obj = {}
     json_obj['title'] = title
     json_obj['link'] = url
