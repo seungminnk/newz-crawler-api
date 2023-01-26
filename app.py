@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify, make_response
 
 from news_crawler import getNewsLink, summarizeNews, getNewsDataByNewsUrl
 
+import multiprocessing
+
+pool = multiprocessing.Pool(processes=32)
 app = Flask(__name__)
 
 @app.route('/news/list')
@@ -22,8 +25,12 @@ def getNewsList():
     news_links = getNewsLink(query, page, limit)
 
     news_list = []
-    for i in news_links['news_links']:
-        news_list.append(summarizeNews(i))
+
+    news_list = pool.map(summarizeNews, news_links['news_links'])
+
+    #for i in news_links['news_links']:
+    #    news_list.append(summarizeNews(i))
+    #    print('summerized one')
 
     news_obj = {}
     news_obj['total'] = news_links['total']
